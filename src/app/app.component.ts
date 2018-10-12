@@ -7,6 +7,7 @@ import { AuthFacade } from "../features/authentication/store/auth.facade";
 import { Deeplinks } from "@ionic-native/deeplinks";
 import { DashboardPage } from "../features/dashboard/pages/dashboard/dashboard.component";
 import { ConnectionFacade } from "../features/connections/store/connection.facade";
+import { SafariViewController } from "@ionic-native/safari-view-controller";
 // import { LoadingService } from "../shared/loading.service";
 
 @Component({
@@ -22,7 +23,8 @@ export class JuntoScopeComponent {
     screenOrientation: ScreenOrientation,
     authFacade: AuthFacade,
     deeplinks: Deeplinks,
-    connectionFacade: ConnectionFacade
+    connectionFacade: ConnectionFacade,
+    safariViewController: SafariViewController
   ) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -44,14 +46,22 @@ export class JuntoScopeComponent {
             // match.$route - the route we matched, which is the matched entry from the arguments to route()
             // match.$args - the args passed in the link
             // match.$link - the full link data
-            console.log("Successfully matched route", match);
-            const code = match.$args.code;
+            console.log("Successfully matched route", JSON.stringify(match));
+            console.log("full data - ", JSON.stringify(match.$link));
+            console.log("args - ", match.$args);
+            console.log("route - ", match.$route);
 
+            const code = match.$args.code;
             const connection = {
               token: code,
               type: "teamwork"
             };
 
+            // if(match && platform.is('ios')) {
+            //   safariViewController.hide(); // this causes the unauthorized error ... 
+            // }
+
+            console.log('connectionFacade.addConnection(connection); connection details - ', JSON.stringify(connection));
             connectionFacade.addConnection(connection);
           },
           nomatch => {

@@ -36,6 +36,7 @@ export class ConnectionService {
   ) {}
 
   addConnection(connection: Connection) {
+    console.log('this is the connection we are passing to the endpoint - ', JSON.stringify(connection));
     return this.http.post(`${environment.apiBaseUrl}/connections`, connection);
   }
 

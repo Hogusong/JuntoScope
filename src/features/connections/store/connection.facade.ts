@@ -101,6 +101,7 @@ export class ConnectionFacade {
         ),
         map(() => new AddConnectionSuccessAction()),
         catchError(error => {
+          console.log('inside error effect - ', error, JSON.stringify(error), error.status);
           this.popupSvc.simpleAlert("Uh Oh!", error.message, "OK");
           return of(new AddConnectionErrorAction({ message: error.message }));
         })
