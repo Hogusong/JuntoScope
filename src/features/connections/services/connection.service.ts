@@ -71,8 +71,21 @@ export class ConnectionService {
         }/connections/${connectionId}/projects/${projectId}/taskLists`
       )
       .pipe(
-        map(response => {
-          return _.keyBy(response.taskLists, "id");
+        switchMap(response => {
+          return forkJoin(
+            response.taskLists.map(taskList => {
+              return this.getTasks(connectionId, projectId, taskList.id).pipe(
+                map(taskArray => {
+                  const filteredArray = taskArray.filter(
+                    task => !task.estimate
+                  );
+                  if (filteredArray.length > 0) {
+                    return taskList;
+                  }
+                })
+              );
+            })
+          );
         })
       );
   }
@@ -87,7 +100,6 @@ export class ConnectionService {
       )
       .pipe(
         map(response => {
-          console.log(response.tasks);
           return Object.keys(response.tasks).map(function(key) {
             return response.tasks[key];
           });
