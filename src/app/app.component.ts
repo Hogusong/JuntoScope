@@ -37,38 +37,39 @@ export class JuntoScopeComponent {
 
       authFacade.checkAuth();
 
-      deeplinks
-        .route({
-          "/": DashboardPage
-        })
-        .subscribe(
-          match => {
-            // match.$route - the route we matched, which is the matched entry from the arguments to route()
-            // match.$args - the args passed in the link
-            // match.$link - the full link data
-            console.log("Successfully matched route", JSON.stringify(match));
-            console.log("full data - ", JSON.stringify(match.$link));
-            console.log("args - ", match.$args);
-            console.log("route - ", match.$route);
+      //Jedi:  The matching route foer the deeplink might not be matching the url that's returned exactly.
+      // I think we can remove this to match anything.  Let's test on iOS with nothing specified
+      deeplinks.route({}).subscribe(
+        match => {
+          // match.$route - the route we matched, which is the matched entry from the arguments to route()
+          // match.$args - the args passed in the link
+          // match.$link - the full link data
+          console.log("Successfully matched route", JSON.stringify(match));
+          console.log("full data - ", JSON.stringify(match.$link));
+          console.log("args - ", match.$args);
+          console.log("route - ", match.$route);
 
-            const code = match.$args.code;
-            const connection = {
-              token: code,
-              type: "teamwork"
-            };
+          const code = match.$args.code;
+          const connection = {
+            token: code,
+            type: "teamwork"
+          };
 
-            // if(match && platform.is('ios')) {
-            //   safariViewController.hide(); // this causes the unauthorized error ... 
-            // }
+          // if(match && platform.is('ios')) {
+          //   safariViewController.hide(); // this causes the unauthorized error ...
+          // }
 
-            console.log('connectionFacade.addConnection(connection); connection details - ', JSON.stringify(connection));
-            connectionFacade.addConnection(connection);
-          },
-          nomatch => {
-            // nomatch.$link - the full link data
-            console.error("Got a deeplink that didn't match", nomatch);
-          }
-        );
+          console.log(
+            "connectionFacade.addConnection(connection); connection details - ",
+            JSON.stringify(connection)
+          );
+          connectionFacade.addConnection(connection);
+        },
+        nomatch => {
+          // nomatch.$link - the full link data
+          console.error("Got a deeplink that didn't match", nomatch);
+        }
+      );
     });
   }
 }
